@@ -29,35 +29,39 @@ def retrieve_contexts(query, top_k = 5):
 
 
 def answer_generation(top_k = configs.top_k):
-    query = input("Enter your query : ")
-    contexts = retrieve_contexts(query, top_k= configs.top_k)
-    prompt_dir = configs.prompt_dir
-    system_prompt = get_prompt(prompt_template_path="system.txt", prompt_dir= prompt_dir)
-    user_prompt = get_prompt(prompt_template_path="user.txt", prompt_dir= prompt_dir, mapped_data = {"query": query, "contexts": contexts})
-    response = client.responses.create(
-            model= configs.openai_llm,
-            input=[{
-                    "role": "system",
-                    "content": system_prompt
-                },
-                {
-                    "role": "user",
-                    "content": [
-                        {
-                            "type": "input_text",
-                            "text": user_prompt,
-                        }]
-                }
-            ]
-        )
-    llm_out = response.output_text
-    llm_out_dictinary = json.loads(llm_out)
-    try:
-        llm_out_dictinary["contexts"] = contexts
-        print(f"{json.dumps(llm_out_dictinary, indent= 4)}")
-    except Exception as e:
-        print(f"Issue occured while generating answer")
-        raise
+    print("enter 'q' to exit")
+    while True:
+        query = input("Enter your query: ")
+        if query.lower() == "q":
+            break
+        contexts = retrieve_contexts(query, top_k= configs.top_k)
+        prompt_dir = configs.prompt_dir
+        system_prompt = get_prompt(prompt_template_path="system.txt", prompt_dir= prompt_dir)
+        user_prompt = get_prompt(prompt_template_path="user.txt", prompt_dir= prompt_dir, mapped_data = {"query": query, "contexts": contexts})
+        response = client.responses.create(
+                model= configs.openai_llm,
+                input=[{
+                        "role": "system",
+                        "content": system_prompt
+                    },
+                    {
+                        "role": "user",
+                        "content": [
+                            {
+                                "type": "input_text",
+                                "text": user_prompt,
+                            }]
+                    }
+                ]
+            )
+        llm_out = response.output_text
+        llm_out_dictinary = json.loads(llm_out)
+        try:
+            llm_out_dictinary["contexts"] = contexts
+            print(f"{json.dumps(llm_out_dictinary, indent= 4)}")
+        except Exception as e:
+            print(f"Issue occured while generating answer")
+            raise
 
 if __name__ == "__main__":
     answer_generation()

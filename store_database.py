@@ -1,6 +1,5 @@
 import pandas as pd
 import configs
-from langchain_community.document_loaders.csv_loader import CSVLoader
 from chromadb.utils import embedding_functions
 import chromadb
 from dotenv import load_dotenv
