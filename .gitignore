@@ -2,7 +2,7 @@
 data/**
 chroma_db/**
 !data/.gitkeep
-!data/.gitkeep
+!chroma_db/.gitkeep
 .vscode
 **/__pycache__
 *.ipynb
